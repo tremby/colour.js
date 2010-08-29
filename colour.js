@@ -1,8 +1,8 @@
 /**
 	bart's colour class for javascript
-	version 1.1
+	version 1.2
 	JS port of Colour.php, see that for documentation
-	parallel with Colour.php version 2.2.13
+	parallel with Colour.php version 2.2.15
 	bart@tremby.net
 */
 function Colour() {
@@ -285,6 +285,10 @@ function Colour() {
 			default:
 				console.error("expected zero or one argument");
 		}
+	}
+
+	this.toString = function() {
+		return this.hex();
 	}
 
 	//replace the current colour-----------------------------------------------
@@ -743,8 +747,8 @@ function Colour() {
 				return this.gr(arg);
 			if (this.validhex(arg)) //hex value
 				return this.hex(arg);
-			if (typeof(arg) == "string" && typeof(eval("this.CSS3." + arg.toLowerCase())) != "undefined" && this.validhex(eval("this.CSS3." + arg.toLowerCase()))) //named colour
-				return this.hex(eval("this.CSS3." + arg.toLowerCase()));
+			if (typeof(arg) == "string" && typeof(this.CSS3[arg.toLowerCase()]) != "undefined" && this.validhex(this.CSS3[arg.toLowerCase()])) //named colour
+				return this.hex(this.CSS3[arg.toLowerCase()]);
 
 			//give up and use black
 			console.warn("unrecognized constructor option");
