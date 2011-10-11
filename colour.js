@@ -1,8 +1,8 @@
-/**
+**
 	bart's colour class for javascript
-	version 1.2
+	version 1.3
 	JS port of Colour.php, see that for documentation
-	parallel with Colour.php version 2.2.15
+	parallel with Colour.php version 2.2.17
 	bart@tremby.net
 */
 function Colour() {
@@ -177,8 +177,8 @@ function Colour() {
 		}
 		this.colour = this.normalizergb(rgb);
 		return this;
-	}
-	
+	};
+
 	this.rgb255 = function() {
 		switch (arguments.length) {
 			case 0:
@@ -192,13 +192,18 @@ function Colour() {
 			default:
 				console.error("expected zero, one (array) or three arguments");
 		}
+		if (rgb.length != 3)
+			console.error("expected three numbers");
+		for (i in rgb)
+			if (rgb[i] < 0 || rgb[i] > 255)
+				console.error("expected numbers in the range 0~255");
 		return this.rgb(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
-	}
-	
+	};
+
 	this.rgb100 = function() {
 		switch (arguments.length) {
 			case 0:
-				return array_map(array("self", "to100"), this.colour);
+				return [this.to100(this.colour[0]), this.to100(this.colour[1]), this.to100(this.colour[2])];
 			case 1:
 				var rgb = arguments[0];
 				break;
@@ -208,33 +213,38 @@ function Colour() {
 			default:
 				console.error("expected zero, one (array) or three arguments");
 		}
+		if (rgb.length != 3)
+			console.error("expected three numbers");
+		for (i in rgb)
+			if (rgb[i] < 0 || rgb[i] > 100)
+				console.error("expected numbers in the range 0~100");
 		return this.rgb(rgb[0] / 100, rgb[1] / 100, rgb[2] / 100);
-	}
-	
+	};
+
 	this.r = function(arg) {
 		return this.r_g_b(0, arg);
-	}
+	};
 	this.g = function(arg) {
 		return this.r_g_b(1, arg);
-	}
+	};
 	this.b = function(arg) {
 		return this.r_g_b(2, arg);
-	}
+	};
 	this.red = function(arg) {
 		return this.r(arg);
-	}
+	};
 	this.green = function(arg) {
 		return this.g(arg);
-	}
+	};
 	this.blue = function(arg) {
 		return this.b(arg);
-	}
+	};
 	this.r_g_b = function(index, arg) {
 		if (typeof(arg) == "undefined")
 			return this.colour[index];
 		this.colour[index] = this.normalize01(arg);
 		return this;
-	}
+	};
 
 	this.hsv = function() {
 		switch (arguments.length) {
@@ -250,12 +260,12 @@ function Colour() {
 				console.error("expected zero, one (array) or three arguments");
 		}
 		return this.rgb(this.hsvtorgb(hsv));
-	}
+	};
 
 	this.hsv100 = function() {
 		switch (arguments.length) {
 			case 0:
-				var hsv = this.rgbtohsv(this.colour);
+				var hsv = this.hsv();
 				return [Math.round(this.normalizehue(hsv[0])), this.to100(hsv[1]), this.to100(hsv[2])];
 			case 1:
 				var hsv = arguments[0];
@@ -266,45 +276,45 @@ function Colour() {
 			default:
 				console.error("expected zero, one (array) or three arguments");
 		}
+		if (rgb.length != 3)
+			console.error("expected three numbers");
+		for (i in rgb.slice(1))
+			if (rgb[i] < 0 || rgb[i] > 100)
+				console.error("expected the second and third numbers to be in the range 0~100");
 		return this.hsv(hsv[0], hsv[1] / 100, hsv[2] / 100);
-	}
+	};
 
 	this.hex = function() {
 		switch (arguments.length) {
 			case 0:
 				return this.rgbtohex(this.colour);
 			case 1:
-				if (typeof(arguments[0]) == "string") {
-					if (!this.validhex(arguments[0])) {
-						console.error("invalid hex string");
-						return;
-					}
+				if (typeof(arguments[0]) == "string")
 					return this.rgb(this.hextorgb(arguments[0]));
-				}
 				return this.rgbtohex(this.colour, arguments[0]);
 			default:
 				console.error("expected zero or one argument");
 		}
-	}
+	};
 
 	this.toString = function() {
 		return this.hex();
-	}
+	};
 
-	//replace the current colour-----------------------------------------------
+	// replace the current colour-----------------------------------------------
 
 	this.gr = function(l) {
 		if (typeof(l) == "undefined")
 			l = 0.5;
 		l = this.normalize01(l);
 		return this.rgb(l, l, l);
-	}
+	};
 	this.grey = function() {
 		return this.gr.apply(this, arguments);
-	}
+	};
 	this.gray = function() {
 		return this.gr.apply(this, arguments);
-	}
+	};
 
 	//make variations of the current colour or change the current colour-------
 
@@ -325,15 +335,19 @@ function Colour() {
 				console.error("expected zero, one or two arguments");
 		}
 
+		if (h === false)
+			return this.desaturate(newobj);
+
 		h = this.normalizehue(h);
 
 		if (h == hsv[0])
 			return newobj ? new Colour(this) : this;
-		return newobj ? new Colour().hsv(h, hsv[1], hsv[2]) : this.hsv(h, hsv[1], hsv[2]);
-	}
+		var newhsv = [h, hsv[1], hsv[2]];
+		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
+	};
 	this.hue = function() {
 		return this.h.apply(this, arguments);
-	}
+	};
 
 	this.s = function() {
 		var hsv = this.hsv();
@@ -353,17 +367,18 @@ function Colour() {
 		}
 		if (s == hsv[1])
 			return newobj ? new Colour(this) : this;
-		return newobj ? new Colour().hsv(hsv[0], s, hsv[2]) : this.hsv(hsv[0], s, hsv[2]);
-	}
+		var newhsv = [hsv[0], s, hsv[2]];
+		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
+	};
 	this.saturation = function() {
 		return this.s.apply(this, arguments);
-	}
-	
+	};
+
 	this.desaturate = function() {
 		if (arguments.length > 0)
 			return this.s(0, arguments[0]);
 		return this.s(0);
-	}
+	};
 
 	this.v = function() {
 		var hsv = this.hsv();
@@ -383,18 +398,19 @@ function Colour() {
 		}
 		if (v == hsv[2])
 			return newobj ? new Colour(this) : this;
-		return newobj ? new Colour().hsv(hsv[0], hsv[1], v) : this.hsv(hsv[0], hsv[1], v);
-	}
+		var newhsv = [hsv[0], hsv[1], v];
+		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
+	};
 	this.value = function() {
 		return this.v.apply(this, arguments);
-	}
+	};
 
 	this.shade = function() {
 		var l = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
 
 		if (typeof(l) != "undefined" && (l == 0 || l == 1)) //black or white
-			return newobj ? new Colour(l) : this.grey(l);
+			return newobj ? new Colour(l) : this.gr(l);
 
 		var rgb = this.rgb();
 		var i = (rgb[0] + rgb[1] + rgb[2]) / 3; //overall intensity
@@ -411,21 +427,38 @@ function Colour() {
 			var scale = diff / i;
 
 		return this.shiftshade(scale, newobj);
-	}
+	};
 	this.sh = function() {
 		return this.shade.apply(this, arguments);
-	}
-	
+	};
+
+	this.shiftshade = function() {
+		var scale = arguments[0];
+		var newobj = arguments.length > 1 ? arguments[1] : true;
+
+		if (scale == 0) //no change
+			return newobj ? new Colour(this) : this;
+		if (scale == 1 || arguments[0] == -1) { //black or white
+			var newscale = scale / 2 + 0.5;
+			return newobj ? new Colour(newscale) : this.gr(newscale);
+		}
+		if (scale > 0)
+			return this.mix(new Colour(1), scale, newobj);
+		return this.mix(new Colour(0), -scale, newobj);
+	};
+	this.shsh = function() {
+		return this.shiftshade.apply(this, arguments);
+	};
+
 	this.shifthue = function() {
-		var hsv = this.hsv();
 		if (arguments.length > 1)
-			return this.h(hsv[0] + arguments[0], arguments[1]);
-		return this.h(hsv[0] + arguments[0]);
-	}
+			return this.h(this.hsv()[0] + arguments[0], arguments[1]);
+		return this.h(this.hsv()[0] + arguments[0]);
+	};
 	this.shh = function() {
 		return this.shifthue.apply(this, arguments);
-	}
-	
+	};
+
 	this.shiftsaturation = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
@@ -440,12 +473,13 @@ function Colour() {
 		else
 			var s = hsv[1] * (scale + 1);
 
-		return newobj ? new Colour().hsv(hsv[0], s, hsv[2]) : this.hsv(hsv[0], s, hsv[2]);
-	}
+		var newhsv = [hsv[0], s, hsv[2]];
+		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
+	};
 	this.shs = function() {
 		return this.shiftsaturation.apply(this, arguments);
-	}
-	
+	};
+
 	this.shiftvalue = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
@@ -460,28 +494,13 @@ function Colour() {
 		else
 			var v = hsv[2] * (scale + 1);
 
-		return newobj ? new Colour().hsv(hsv[0], hsv[1], v) : this.hsv(hsv[0], hsv[1], v);
-	}
+		var newhsv = [hsv[0], hsv[1], v];
+		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
+	};
 	this.shv = function() {
 		return this.shiftvalue.apply(this, arguments);
-	}
-	
-	this.shiftshade = function() {
-		var scale = arguments[0];
-		var newobj = arguments.length > 1 ? arguments[1] : true;
+	};
 
-		if (scale == 0) //no change
-			return newobj ? new Colour(this) : this;
-		if (scale == 1 || arguments[0] == -1) //black or white
-			return newobj ? new Colour(scale / 2 + 0.5) : this.grey(arguments[0] / 2 + 0.5);
-		if (scale > 0)
-			return this.mix(new Colour(1), scale, newobj);
-		return this.mix(new Colour(0), -scale, newobj);
-	}
-	this.shsh = function() {
-		return this.shiftshade.apply(this, arguments);
-	}
-	
 	this.halfsat = function() {
 		if (arguments.length == 2 && typeof(arguments[1]) != "boolean") {
 			var h = arguments[0];
@@ -494,14 +513,17 @@ function Colour() {
 		}
 		var hsv = [h, 0.5 - v / 2, v];
 		return newobj ? new Colour().hsv(hsv) : this.hsv(hsv);
-	}
+	};
 	this.hs = function() {
 		return this.halfsat.apply(this, arguments);
-	}
+	};
 
 	this.mix = function() {
-		var c = arguments[0].rgb();
-		var mix = arguments.length > 1 ? arguments[1] : 0.5;
+		var c = arguments[0];
+		if (typeof(c) != "object" || typeof(c.CSS3) != "object")
+			var c = new Colour(c);
+		c = c.rgb();
+		var mix = arguments.length > 1 ? this.normalize01(arguments[1]) : 0.5;
 		var newobj = arguments.length > 2 ? arguments[2] : true;
 		var rgb = this.rgb();
 		var newrgb = [
@@ -510,20 +532,24 @@ function Colour() {
 			rgb[2] + (c[2] - rgb[2]) * mix
 		];
 		return newobj ? new Colour(newrgb) : this.rgb(newrgb);
-	}
-	
+	};
+
 	this.xarashade = function() {
 		var xs = arguments[0];
 		var xv = arguments[1];
 		var newobj = arguments.length > 2 ? arguments[2] : true;
+		if (typeof(xs) != "number" || typeof(xv) != "number")
+			console.error("expected a numeric type");
+		if (xs < -100 || xs > 100 || xv < -100 || xv > 100)
+			console.error("expected numbers in the range -100~100");
 		return this.shiftvalue(xv / 100, newobj).shiftsaturation(-xs / 100, false);
-	}
+	};
 	this.xs = function() {
 		return this.xarashade.apply(this, arguments);
-	}
-	
-	//miscellaneous output-----------------------------------------------------
-	
+	};
+
+	// miscellaneous output-----------------------------------------------------
+
 	this.swatch = function() {
 		var showhex = arguments.length > 0 ? arguments[0] : true;
 		var cssclass = arguments.length > 1 ? arguments[1] : "";
@@ -537,17 +563,17 @@ function Colour() {
 		html += showhex ? this.hex() : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		html += "</span>";
 		return html;
-	}
-	
+	};
+
 	this.rgburl = function() {
 		var forhtml = arguments.length > 0 ? arguments[0] : false;
 		var string = "r=" + this.r() + "&g=" + this.g() + "&b=" + this.b();
 		if (forhtml)
 			return string.replace(/&/g, "&amp;");
 		return string;
-	}
+	};
 
-	//static colour conversion functions---------------------------------------
+	// static colour conversion functions---------------------------------------
 
 	this.hsvtorgb = function() {
 		switch (arguments.length) {
@@ -561,14 +587,14 @@ function Colour() {
 				console.error("expected one or three arguments");
 		}
 		hsv = this.normalizehsv(hsv);
-		
+
 		var h = hsv[0];
 		var s = hsv[1];
 		var v = hsv[2];
-		
+
 		if (h === false || s == 0) //black or grey
 			return [v, v, v];
-		
+
 		h /= 60; //sector 0~5
 		var i = Math.floor(h);
 		var f = h - i; //factorial part of h (hue position in the sector)
@@ -586,8 +612,8 @@ function Colour() {
 			default:	r = v; g = p; b = q; break;
 		}
 		return [r, g, b];
-	}
-	
+	};
+
 	this.rgbtohsv = function() {
 		switch (arguments.length) {
 			case 1:
@@ -600,11 +626,11 @@ function Colour() {
 				console.error("expected one or three arguments");
 		}
 		rgb = this.normalizergb(rgb);
-		
+
 		var r = rgb[0];
 		var g = rgb[1];
 		var b = rgb[2];
-		
+
 		var v = r;
 		if (g > v)
 			v = g;
@@ -630,9 +656,13 @@ function Colour() {
 		h *= 60; //to degrees
 		h = this.normalizehue(h);
 		return [h, s, v];
-	}
-	
+	};
+
 	this.hextorgb = function(hex) {
+		if (!this.validhex(hex)) {
+			console.error("invalid hex string");
+			return;
+		}
 		if (hex[0] == "#") //strip hash
 			hex = hex.substr(1);
 		if (hex.length == 3)
@@ -641,8 +671,8 @@ function Colour() {
 		var g = parseInt(hex.substr(2, 2), 16);
 		var b = parseInt(hex.substr(4, 2), 16);
 		return [r / 255, g / 255, b / 255];
-	}	
-	
+	};
+
 	this.rgbtohex = function() {
 		switch (arguments.length) {
 			case 1:
@@ -667,72 +697,63 @@ function Colour() {
 		if (rgb[2].length < 2) rgb[2] = "0" + rgb[2];
 
 		return (hash ? "#" : "") + rgb[0] + rgb[1] + rgb[2];
-	}
-	
-	//input checking and normalization-----------------------------------------
-	
+	};
+
+	// input checking and normalization-----------------------------------------
+
 	this.validhex = function(string) {
 		return typeof(string) == "string" && /^#?([0-9a-fA-F]{3}){1,2}$/.test(string);
-	}
-	
+	};
+
 	this.normalizergb = function(rgb) {
 		if (rgb.length != 3)
-			console.warn("array should have three values -- setting any missing ones to zero");
-		return [
-			typeof(rgb[0]) != "undefined" ? this.normalize01(rgb[0]) : 0,
-			typeof(rgb[1]) != "undefined" ? this.normalize01(rgb[1]) : 0,
-			typeof(rgb[2]) != "undefined" ? this.normalize01(rgb[2]) : 0
-		];
-	}
-	
+			console.error("array should have three values");
+		return [this.normalize01(rgb[0]), this.normalize01(rgb[1]), this.normalize01(rgb[2]) ];
+	};
+
 	this.normalizehsv = function(hsv) {
 		if (hsv.length != 3)
-			console.warn("array should have three values -- setting any missing ones to false (hue) or zero (otherwise)");
-		var ret = [
-			typeof(hsv[0]) != "undefined" ? this.normalizehue(hsv[0]) : false,
-			typeof(hsv[1]) != "undefined" ? this.normalize01(hsv[1]) : 0,
-			typeof(hsv[2]) != "undefined" ? this.normalize01(hsv[2]) : 0
-		];
+			console.error("array should have three values");
+		var ret = [this.normalizehue(hsv[0]), this.normalize01(hsv[1]), this.normalize01(hsv[2])];
 		if (ret[1] == 0)
 			ret[0] = false;
 		return ret;
-	}
-	
+	};
+
 	this.normalizehue = function(h) {
 		if (h === false)
 			return h;
-		while(h < 0)
+		if (typeof(h) != "number")
+			console.error("expected a numeric type or false");
+		while (h < 0)
 			h += 360;
-		while(h >= 360)
+		while (h >= 360)
 			h -= 360;
 		return h;
-	}
-	
+	};
+
 	this.normalize01 = function(f) {
-		if (f < 0 || f > 1) {
-			console.warn("value out of range");
-			if (f < 0)
-				f = 0;
-			else
-				f = 1;
-		}
+		if (typeof(f) != "number")
+			console.error("expected a numeric type");
+		if (f < 0 || f > 1)
+			console.error("expected number 0~1");
 		return f;
-	}
-	
-	//changing scales----------------------------------------------------------
-	
+	};
+
+	// changing scales----------------------------------------------------------
+
 	this.to255 = function(f) {
 		f = this.normalize01(f);
 		return Math.round(f * 255);
-	}
-	
+	};
+
 	this.to100 = function(f) {
 		f = this.normalize01(f);
 		return Math.round(f * 100);
-	}
+	};
 
-	//constructor--------------------------------------------------------------
-	
+	// constructor--------------------------------------------------------------
+
 	switch (arguments.length) {
 		case 0:
 			return this.gr(0);
@@ -741,7 +762,7 @@ function Colour() {
 
 			if (typeof(arg) == "object" && arg.length == 3) //rgb values
 				return this.rgb(arg);
-			if (typeof(arg) == "object" && typeof(arg.CSS3) == "object") //Colour object (bad test but hey)
+			if (typeof(arg) == "object" && typeof(arg.CSS3) == "object") //Colour object (bad test but hey. this test also exists in the mix method)
 				return this.rgb(arg.rgb());
 			if (typeof(arg) == "number") //lightness
 				return this.gr(arg);
@@ -751,10 +772,10 @@ function Colour() {
 				return this.hex(this.CSS3[arg.toLowerCase()]);
 
 			//give up and use black
-			console.warn("unrecognized constructor option");
+			console.error("unrecognized constructor option");
 			return this.gr(0);
 		default:
 			console.error("expected zero or one argument");
 			return false;
-	}
+	};
 };
