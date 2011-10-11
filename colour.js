@@ -2,7 +2,7 @@
 	bart's colour class for javascript
 	version 1.3
 	JS port of Colour.php, see that for documentation
-	parallel with Colour.php version 2.2.17
+	parallel with Colour.php version 2.2.18
 	bart@tremby.net
 */
 function Colour() {
