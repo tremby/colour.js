@@ -1,8 +1,8 @@
 **
 	bart's colour class for javascript
-	version 1.3
+	version 1.4
 	JS port of Colour.php, see that for documentation
-	parallel with Colour.php version 2.2.18
+	parallel with Colour.php version 2.2.19
 	bart@tremby.net
 */
 function Colour() {
@@ -384,7 +384,7 @@ function Colour() {
 		var hsv = this.hsv();
 		switch (arguments.length) {
 			case 0:
-				return hsv[1];
+				return hsv[2];
 			case 1:
 				var v = arguments[0];
 				var newobj = true;
@@ -778,4 +778,4 @@ function Colour() {
 			console.error("expected zero or one argument");
 			return false;
 	};
-};
+}
