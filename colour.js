@@ -1,10 +1,10 @@
-**
-	bart's colour class for javascript
-	version 1.4
-	JS port of Colour.php, see that for documentation
-	parallel with Colour.php version 2.2.19
-	bart@tremby.net
-*/
+/*
+ * bart's colour class for javascript
+ * version 1.4
+ * JS port of Colour.php, see that for documentation
+ * parallel with Colour.php version 2.2.19
+ * bart@tremby.net
+ */
 function Colour() {
 	//default values
 	this.colour = [0, 0, 0];
