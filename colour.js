@@ -240,7 +240,7 @@ function Colour() {
 		return this.b(arg);
 	};
 	this.r_g_b = function(index, arg) {
-		if (typeof(arg) == "undefined")
+		if (typeof arg == "undefined")
 			return this.colour[index];
 		this.colour[index] = this.normalize01(arg);
 		return this;
@@ -289,7 +289,7 @@ function Colour() {
 			case 0:
 				return this.rgbtohex(this.colour);
 			case 1:
-				if (typeof(arguments[0]) == "string")
+				if (typeof arguments[0] == "string")
 					return this.rgb(this.hextorgb(arguments[0]));
 				return this.rgbtohex(this.colour, arguments[0]);
 			default:
@@ -304,7 +304,7 @@ function Colour() {
 	// replace the current colour-----------------------------------------------
 
 	this.gr = function(l) {
-		if (typeof(l) == "undefined")
+		if (typeof l == "undefined")
 			l = 0.5;
 		l = this.normalize01(l);
 		return this.rgb(l, l, l);
@@ -409,13 +409,13 @@ function Colour() {
 		var l = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
 
-		if (typeof(l) != "undefined" && (l == 0 || l == 1)) //black or white
+		if (typeof l != "undefined" && (l == 0 || l == 1)) //black or white
 			return newobj ? new Colour(l) : this.gr(l);
 
 		var rgb = this.rgb();
 		var i = (rgb[0] + rgb[1] + rgb[2]) / 3; //overall intensity
 
-		if (typeof(l) == "undefined")
+		if (typeof l == "undefined")
 			return i;
 		if (i == l) //unlikely, but hey
 			return newobj ? new Colour(this) : this;
@@ -502,7 +502,7 @@ function Colour() {
 	};
 
 	this.halfsat = function() {
-		if (arguments.length == 2 && typeof(arguments[1]) != "boolean") {
+		if (arguments.length == 2 && typeof arguments[1] != "boolean") {
 			var h = arguments[0];
 			var v = arguments[1];
 			var newobj = true;
@@ -520,7 +520,7 @@ function Colour() {
 
 	this.mix = function() {
 		var c = arguments[0];
-		if (typeof(c) != "object" || typeof(c.CSS3) != "object")
+		if (typeof c != "object" || typeof c.CSS3 != "object")
 			var c = new Colour(c);
 		c = c.rgb();
 		var mix = arguments.length > 1 ? this.normalize01(arguments[1]) : 0.5;
@@ -538,7 +538,7 @@ function Colour() {
 		var xs = arguments[0];
 		var xv = arguments[1];
 		var newobj = arguments.length > 2 ? arguments[2] : true;
-		if (typeof(xs) != "number" || typeof(xv) != "number")
+		if (typeof xs != "number" || typeof xv != "number")
 			console.error("expected a numeric type");
 		if (xs < -100 || xs > 100 || xv < -100 || xv > 100)
 			console.error("expected numbers in the range -100~100");
@@ -702,7 +702,7 @@ function Colour() {
 	// input checking and normalization-----------------------------------------
 
 	this.validhex = function(string) {
-		return typeof(string) == "string" && /^#?([0-9a-fA-F]{3}){1,2}$/.test(string);
+		return typeof string == "string" && /^#?([0-9a-fA-F]{3}){1,2}$/.test(string);
 	};
 
 	this.normalizergb = function(rgb) {
@@ -723,7 +723,7 @@ function Colour() {
 	this.normalizehue = function(h) {
 		if (h === false)
 			return h;
-		if (typeof(h) != "number")
+		if (typeof h != "number")
 			console.error("expected a numeric type or false");
 		while (h < 0)
 			h += 360;
@@ -733,7 +733,7 @@ function Colour() {
 	};
 
 	this.normalize01 = function(f) {
-		if (typeof(f) != "number")
+		if (typeof f != "number")
 			console.error("expected a numeric type");
 		if (f < 0 || f > 1)
 			console.error("expected number 0~1");
@@ -760,15 +760,17 @@ function Colour() {
 		case 1:
 			arg = arguments[0];
 
-			if (typeof(arg) == "object" && arg.length == 3) //rgb values
+			if (arg === null)
+				return this.gr(0);
+			if (typeof arg == "object" && arg.length == 3) //rgb values
 				return this.rgb(arg);
-			if (typeof(arg) == "object" && typeof(arg.CSS3) == "object") //Colour object (bad test but hey. this test also exists in the mix method)
+			if (typeof arg == "object" && typeof arg.CSS3 == "object") //Colour object (bad test but hey. this test also exists in the mix method)
 				return this.rgb(arg.rgb());
-			if (typeof(arg) == "number") //lightness
+			if (typeof arg == "number") //lightness
 				return this.gr(arg);
 			if (this.validhex(arg)) //hex value
 				return this.hex(arg);
-			if (typeof(arg) == "string" && typeof(this.CSS3[arg.toLowerCase()]) != "undefined" && this.validhex(this.CSS3[arg.toLowerCase()])) //named colour
+			if (typeof arg == "string" && typeof this.CSS3[arg.toLowerCase()] != "undefined" && this.validhex(this.CSS3[arg.toLowerCase()])) //named colour
 				return this.hex(this.CSS3[arg.toLowerCase()]);
 
 			//give up and use black
@@ -778,4 +780,4 @@ function Colour() {
 			console.error("expected zero or one argument");
 			return false;
 	};
-}
+};
