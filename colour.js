@@ -1,6 +1,6 @@
 /*
  * bart's colour class for javascript
- * version 1.4
+ * version 1.4.1
  * JS port of Colour.php
  * parallel with Colour.php version 2.2.19
  * bart@tremby.net
@@ -244,23 +244,14 @@ function Colour() {
 	*	value to it
 	*	given no arguments, returns intensity float 0~1 of this colour component
 	*/
-	this.r = function(arg) {
+	this.r = this.red = function(arg) {
 		return this.r_g_b(0, arg);
 	};
-	this.g = function(arg) {
+	this.g = this.green = function(arg) {
 		return this.r_g_b(1, arg);
 	};
-	this.b = function(arg) {
+	this.b = this.blue = function(arg) {
 		return this.r_g_b(2, arg);
-	};
-	this.red = function(arg) {
-		return this.r(arg);
-	};
-	this.green = function(arg) {
-		return this.g(arg);
-	};
-	this.blue = function(arg) {
-		return this.b(arg);
 	};
 	this.r_g_b = function(index, arg) {
 		if (typeof arg == "undefined")
@@ -351,17 +342,11 @@ function Colour() {
 	*	takes intensity float 0~1 and sets this colour to a grey with that 
 	*	intensity. default 0.5, so grey() gives the CSS3 colour grey
 	*/
-	this.gr = function(l) {
+	this.gr = this.grey = this.gray = function(l) {
 		if (typeof l == "undefined")
 			l = 0.5;
 		l = this.normalize01(l);
 		return this.rgb(l, l, l);
-	};
-	this.grey = function() {
-		return this.gr.apply(this, arguments);
-	};
-	this.gray = function() {
-		return this.gr.apply(this, arguments);
 	};
 
 	//make variations of the current colour or change the current colour-------
@@ -372,7 +357,7 @@ function Colour() {
 	*	instead
 	*	given no arguments, return the colour's hue (float 0~360)
 	*/
-	this.h = function() {
+	this.h = this.hue = function() {
 		var hsv = this.hsv();
 		switch (arguments.length) {
 			case 0:
@@ -399,9 +384,6 @@ function Colour() {
 		var newhsv = [h, hsv[1], hsv[2]];
 		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
 	};
-	this.hue = function() {
-		return this.h.apply(this, arguments);
-	};
 
 	/**	s, saturation
 	*	return a new colour like this one but with a given saturation 
@@ -413,7 +395,7 @@ function Colour() {
 	*		1	full saturation
 	*	given no arguments, return the colour's saturation (float 0~1)
 	*/
-	this.s = function() {
+	this.s = this.saturation = function() {
 		var hsv = this.hsv();
 		switch (arguments.length) {
 			case 0:
@@ -433,9 +415,6 @@ function Colour() {
 			return newobj ? new Colour(this) : this;
 		var newhsv = [hsv[0], s, hsv[2]];
 		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
-	};
-	this.saturation = function() {
-		return this.s.apply(this, arguments);
 	};
 
 	/**	desaturate
@@ -459,7 +438,7 @@ function Colour() {
 	*		1	bright
 	*	given no arguments, return the colour's value (float 0~1)
 	*/
-	this.v = function() {
+	this.v = this.value = function() {
 		var hsv = this.hsv();
 		switch (arguments.length) {
 			case 0:
@@ -480,9 +459,6 @@ function Colour() {
 		var newhsv = [hsv[0], hsv[1], v];
 		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
 	};
-	this.value = function() {
-		return this.v.apply(this, arguments);
-	};
 
 	/**	shade, sh
 	*	shiftshade but on an absolute scale. the colour's total 
@@ -498,7 +474,7 @@ function Colour() {
 	*	given no arguments, returns the colour's intensity as a 
 	*	float(0~1)
 	*/
-	this.shade = function() {
+	this.shade = this.sh = function() {
 		var l = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
 
@@ -521,9 +497,6 @@ function Colour() {
 
 		return this.shiftshade(scale, newobj);
 	};
-	this.sh = function() {
-		return this.shade.apply(this, arguments);
-	};
 
 	/**	shiftshade, shsh
 	*	return a new colour brightened or darkened by moving in a 
@@ -539,7 +512,7 @@ function Colour() {
 	*		0	leave it alone
 	*		1	white
 	*/
-	this.shiftshade = function() {
+	this.shiftshade = this.shsh = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
 
@@ -553,9 +526,6 @@ function Colour() {
 			return this.mix(new Colour(1), scale, newobj);
 		return this.mix(new Colour(0), -scale, newobj);
 	};
-	this.shsh = function() {
-		return this.shiftshade.apply(this, arguments);
-	};
 
 	/**	shifthue, shh
 	*	return a new colour with the hue shifted
@@ -563,13 +533,10 @@ function Colour() {
 	*	if the second argument is set to false, the current colour is altered 
 	*	instead
 	*/
-	this.shifthue = function() {
+	this.shifthue = this.shh = function() {
 		if (arguments.length > 1)
 			return this.h(this.hsv()[0] + arguments[0], arguments[1]);
 		return this.h(this.hsv()[0] + arguments[0]);
-	};
-	this.shh = function() {
-		return this.shifthue.apply(this, arguments);
 	};
 
 	/**	shiftsaturation, shs
@@ -582,7 +549,7 @@ function Colour() {
 	*		0	leave it alone
 	*		1	full saturation
 	*/
-	this.shiftsaturation = function() {
+	this.shiftsaturation = this.shs = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
 
@@ -599,9 +566,6 @@ function Colour() {
 		var newhsv = [hsv[0], s, hsv[2]];
 		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
 	};
-	this.shs = function() {
-		return this.shiftsaturation.apply(this, arguments);
-	};
 
 	/**	shiftvalue, shv
 	*	return a new colour like this one but lightened or darkened
@@ -614,7 +578,7 @@ function Colour() {
 	*		0	no change
 	*		1	bright
 	*/
-	this.shiftvalue = function() {
+	this.shiftvalue = this.shv = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
 
@@ -631,9 +595,6 @@ function Colour() {
 		var newhsv = [hsv[0], hsv[1], v];
 		return newobj ? new Colour().hsv(newhsv) : this.hsv(newhsv);
 	};
-	this.shv = function() {
-		return this.shiftvalue.apply(this, arguments);
-	};
 
 	/**	halfsat, hs
 	*	gives a washed out shade
@@ -643,7 +604,7 @@ function Colour() {
 	*	current colour's hue, replacing the colour if the second 
 	*	argument is false or returning a new one if it is true
 	*/
-	this.halfsat = function() {
+	this.halfsat = this.hs = function() {
 		if (arguments.length == 2 && typeof arguments[1] != "boolean") {
 			var h = arguments[0];
 			var v = arguments[1];
@@ -655,9 +616,6 @@ function Colour() {
 		}
 		var hsv = [h, 0.5 - v / 2, v];
 		return newobj ? new Colour().hsv(hsv) : this.hsv(hsv);
-	};
-	this.hs = function() {
-		return this.halfsat.apply(this, arguments);
 	};
 
 	/**	mix
@@ -703,7 +661,7 @@ function Colour() {
 	*			0		no change
 	*			100		bright
 	*/
-	this.xarashade = function() {
+	this.xarashade = this.xs = function() {
 		var xs = arguments[0];
 		var xv = arguments[1];
 		var newobj = arguments.length > 2 ? arguments[2] : true;
@@ -712,9 +670,6 @@ function Colour() {
 		if (xs < -100 || xs > 100 || xv < -100 || xv > 100)
 			console.error("expected numbers in the range -100~100");
 		return this.shiftvalue(xv / 100, newobj).shiftsaturation(-xs / 100, false);
-	};
-	this.xs = function() {
-		return this.xarashade.apply(this, arguments);
 	};
 
 	// miscellaneous output-----------------------------------------------------
