@@ -1,7 +1,7 @@
 /*
  * bart's colour class for javascript
  * version 1.4
- * JS port of Colour.php, see that for documentation
+ * JS port of Colour.php
  * parallel with Colour.php version 2.2.19
  * bart@tremby.net
  */
@@ -162,6 +162,12 @@ function Colour() {
 
 	//get/set hybrids to either get variables or entirely replace the colour---
 
+	/**	rgb
+	*	takes r, g, b (each intensity float 0~1) or an array of the same values, 
+	*	and sets this colour to it
+	*	given no arguments, returns array(r, g, b) of intensity float 0~1 of 
+	*	this colour
+	*/
 	this.rgb = function() {
 		switch (arguments.length) {
 			case 0:
@@ -179,6 +185,12 @@ function Colour() {
 		return this;
 	};
 
+	/**	rgb255
+	*	takes r, g, b (each intensity int 0~255) or an array of the same values, 
+	*	and sets this colour to it
+	*	given no arguments, returns array(r, g, b) of intensity int 0~255 of 
+	*	this colour
+	*/
 	this.rgb255 = function() {
 		switch (arguments.length) {
 			case 0:
@@ -200,6 +212,12 @@ function Colour() {
 		return this.rgb(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
 	};
 
+	/**	rgb100
+	*	takes r, g, b (each intensity int 0~100) or an array of the same values, 
+	*	and sets this colour to it
+	*	given no arguments, returns array(r, g, b) of intensity int 0~100 of 
+	*	this colour
+	*/
 	this.rgb100 = function() {
 		switch (arguments.length) {
 			case 0:
@@ -221,6 +239,11 @@ function Colour() {
 		return this.rgb(rgb[0] / 100, rgb[1] / 100, rgb[2] / 100);
 	};
 
+	/**	r, g, b (also red, green, blue)
+	*	takes r, g, b (respectively) intensity float 0~1 and sets this colour's 
+	*	value to it
+	*	given no arguments, returns intensity float 0~1 of this colour component
+	*/
 	this.r = function(arg) {
 		return this.r_g_b(0, arg);
 	};
@@ -246,6 +269,12 @@ function Colour() {
 		return this;
 	};
 
+	/**	hsv
+	*	takes hue float 0~360, saturation float 0~1, value float 0~1 or an array 
+	*	of the same values, and sets this colour to it
+	*	given no arguments, returns an array holding the colour's hue, 
+	*	saturation and value (all floats, hue 0~360, others 0~1)
+	*/
 	this.hsv = function() {
 		switch (arguments.length) {
 			case 0:
@@ -262,6 +291,12 @@ function Colour() {
 		return this.rgb(this.hsvtorgb(hsv));
 	};
 
+	/**	hsv100
+	*	takes hue int 0~360, saturation int 0~100, value int 0~100 or an array 
+	*	of the same values, and sets this colour to it
+	*	given no arguments, returns an array holding the colour's hue, 
+	*	saturation and value (all ints, hue 0~360, others 0~100)
+	*/
 	this.hsv100 = function() {
 		switch (arguments.length) {
 			case 0:
@@ -284,6 +319,12 @@ function Colour() {
 		return this.hsv(hsv[0], hsv[1] / 100, hsv[2] / 100);
 	};
 
+	/**	hex
+	*	takes a colour string in hex notation with or without a hash at the 
+	*	start and in rgb or rrggbb format, and sets this colour to it
+	*	given no arguments or one boolean, return a hex string of the colour by 
+	*	default prepends a hash to the string -- pass false to switch that off
+	*/
 	this.hex = function() {
 		switch (arguments.length) {
 			case 0:
@@ -297,12 +338,19 @@ function Colour() {
 		}
 	};
 
+	/**	toString
+	 *	calls hex()
+	 */
 	this.toString = function() {
 		return this.hex();
 	};
 
 	// replace the current colour-----------------------------------------------
 
+	/**	gr, grey, gray
+	*	takes intensity float 0~1 and sets this colour to a grey with that 
+	*	intensity. default 0.5, so grey() gives the CSS3 colour grey
+	*/
 	this.gr = function(l) {
 		if (typeof l == "undefined")
 			l = 0.5;
@@ -318,6 +366,12 @@ function Colour() {
 
 	//make variations of the current colour or change the current colour-------
 
+	/**	h, hue
+	*	return a new colour like this one but with a given hue (float 0~360)
+	*	if the second argument is set to false, the current colour is altered 
+	*	instead
+	*	given no arguments, return the colour's hue (float 0~360)
+	*/
 	this.h = function() {
 		var hsv = this.hsv();
 		switch (arguments.length) {
@@ -349,6 +403,16 @@ function Colour() {
 		return this.h.apply(this, arguments);
 	};
 
+	/**	s, saturation
+	*	return a new colour like this one but with a given saturation 
+	*	(float 0~1)
+	*	if the second argument is set to false, the current colour is altered 
+	*	instead
+	*	Xara HSV picker: right to left on start colour's row
+	*		0	desaturate completely
+	*		1	full saturation
+	*	given no arguments, return the colour's saturation (float 0~1)
+	*/
 	this.s = function() {
 		var hsv = this.hsv();
 		switch (arguments.length) {
@@ -374,12 +438,27 @@ function Colour() {
 		return this.s.apply(this, arguments);
 	};
 
+	/**	desaturate
+	*	return a new colour like this one but completely desaturated
+	*	if false is passed, the current colour is altered instead
+	*/
 	this.desaturate = function() {
 		if (arguments.length > 0)
 			return this.s(0, arguments[0]);
 		return this.s(0);
 	};
 
+	/**	v, value
+	*	return a new colour like this one but with a given value 
+	*	(float 0~1)
+	*	if the second argument is set to false, the current colour is 
+	*	altered instead
+	*	if it's not grey, it'll never reach white
+	*	Xara HSV picker: bottom to top on start colour's column
+	*		0	black
+	*		1	bright
+	*	given no arguments, return the colour's value (float 0~1)
+	*/
 	this.v = function() {
 		var hsv = this.hsv();
 		switch (arguments.length) {
@@ -405,6 +484,20 @@ function Colour() {
 		return this.v.apply(this, arguments);
 	};
 
+	/**	shade, sh
+	*	shiftshade but on an absolute scale. the colour's total 
+	*	intensity, sum(r, g, b), decides how far up the scale we are 
+	*	and then shiftshade is called with a suitable relative value.
+	*	takes an intensity (float 0~1)
+	*	if the second argument is set to false, the current colour is 
+	*	altered instead
+	*	Xara HSV picker: bottom left to start colour to top right, in two 
+	*	straight lines
+	*		0	black
+	*		1	white
+	*	given no arguments, returns the colour's intensity as a 
+	*	float(0~1)
+	*/
 	this.shade = function() {
 		var l = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
@@ -432,6 +525,20 @@ function Colour() {
 		return this.shade.apply(this, arguments);
 	};
 
+	/**	shiftshade, shsh
+	*	return a new colour brightened or darkened by moving in a 
+	*	straight line in sv space towards white or black (ie don't 
+	*	first change saturation and only when the limit's reached 
+	*	change value)
+	*	takes a scale factor (float -1~1)
+	*	if the second argument is set to false, the current colour is 
+	*	altered instead of a new one being made
+	*	Xara HSV picker: bottom left to start colour to top right, in 
+	*	two straight lines
+	*		-1	black
+	*		0	leave it alone
+	*		1	white
+	*/
 	this.shiftshade = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
@@ -450,6 +557,12 @@ function Colour() {
 		return this.shiftshade.apply(this, arguments);
 	};
 
+	/**	shifthue, shh
+	*	return a new colour with the hue shifted
+	*	takes an angle (float 0~360)
+	*	if the second argument is set to false, the current colour is altered 
+	*	instead
+	*/
 	this.shifthue = function() {
 		if (arguments.length > 1)
 			return this.h(this.hsv()[0] + arguments[0], arguments[1]);
@@ -459,6 +572,16 @@ function Colour() {
 		return this.shifthue.apply(this, arguments);
 	};
 
+	/**	shiftsaturation, shs
+	*	return a new colour saturated or desaturated
+	*	takes a scale factor (float -1~1)
+	*	if the second argument is set to false, the current colour is altered 
+	*	instead
+	*	Xara HSV picker: right to left on start colour's row
+	*		-1	desaturate completely
+	*		0	leave it alone
+	*		1	full saturation
+	*/
 	this.shiftsaturation = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
@@ -480,6 +603,17 @@ function Colour() {
 		return this.shiftsaturation.apply(this, arguments);
 	};
 
+	/**	shiftvalue, shv
+	*	return a new colour like this one but lightened or darkened
+	*	takes a scale factor (float -1~1)
+	*	if the second argument is set to false, the current colour is altered 
+	*	instead
+	*	if it's not grey, it'll never reach white
+	*	Xara HSV picker: bottom to top on start colour's column
+	*		-1	black
+	*		0	no change
+	*		1	bright
+	*/
 	this.shiftvalue = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
@@ -501,6 +635,14 @@ function Colour() {
 		return this.shiftvalue.apply(this, arguments);
 	};
 
+	/**	halfsat, hs
+	*	gives a washed out shade
+	*	takes (h (hue float 0~360), v (value float 0~1)) and entirely 
+	*	replaces the current colour
+	*	or takes (v (value float 0~1), new = true) and uses the 
+	*	current colour's hue, replacing the colour if the second 
+	*	argument is false or returning a new one if it is true
+	*/
 	this.halfsat = function() {
 		if (arguments.length == 2 && typeof arguments[1] != "boolean") {
 			var h = arguments[0];
@@ -518,6 +660,16 @@ function Colour() {
 		return this.halfsat.apply(this, arguments);
 	};
 
+	/**	mix
+	*	return a new colour which is a mixture between the current 
+	*	colour and a given colour
+	*	if the given colour is not a Colour object, call the constructor with 
+	*	that argument
+	*	second argument is the amount of the passed colour to use 
+	*	(float 0~1, default 0.5)
+	*	if the third argument is set to false, the current colour is altered 
+	*	instead
+	*/
 	this.mix = function() {
 		var c = arguments[0];
 		if (typeof c != "object" || typeof c.CSS3 != "object")
@@ -534,6 +686,23 @@ function Colour() {
 		return newobj ? new Colour(newrgb) : this.rgb(newrgb);
 	};
 
+	/**	xarashade, xs
+	*	return a new colour like this one but with both saturation and 
+	*	value shifted with arguments like in Xara's colour picker -- 
+	*	that is, proportional percentages to move from the colour to 
+	*	full or zero saturation or value
+	*	if the third argument is set to false, the current colour is 
+	*	altered instead
+	*		saturation shift (i guess it's this way around since left is full 
+	*		saturation on the picker)
+	*			-100	full saturation
+	*			0		no change
+	*			100		desaturate
+	*		value shift
+	*			-100	black
+	*			0		no change
+	*			100		bright
+	*/
 	this.xarashade = function() {
 		var xs = arguments[0];
 		var xv = arguments[1];
@@ -550,6 +719,9 @@ function Colour() {
 
 	// miscellaneous output-----------------------------------------------------
 
+	/**	swatch
+	*	return an HTML fragment which will render a colour swatch
+	*/
 	this.swatch = function() {
 		var showhex = arguments.length > 0 ? arguments[0] : true;
 		var cssclass = arguments.length > 1 ? arguments[1] : "";
@@ -565,6 +737,10 @@ function Colour() {
 		return html;
 	};
 
+	/**	rgburl
+	*	return GET vars of the red, green and blue intensities
+	*	set the argument to true if the string is to be put in HTML
+	*/
 	this.rgburl = function() {
 		var forhtml = arguments.length > 0 ? arguments[0] : false;
 		var string = "r=" + this.r() + "&g=" + this.g() + "&b=" + this.b();
@@ -575,6 +751,11 @@ function Colour() {
 
 	// static colour conversion functions---------------------------------------
 
+	/**	hsvtorgb
+	*	takes hue float 0~360, saturation float 0~1, value float 0~1 
+	*	or an array of the same values
+	*	returns array(r, g, b) of intensity float 0~1
+	*/
 	this.hsvtorgb = function() {
 		switch (arguments.length) {
 			case 1:
@@ -614,6 +795,12 @@ function Colour() {
 		return [r, g, b];
 	};
 
+	/**	rgbtohsv
+	*	takes r, g, b (each intensity float 0~1)
+	*	or an array of the same values
+	*	returns array(h (hue float 0~360), s (saturation float 0~1), v (value 
+	*	float 0~1))
+	*/
 	this.rgbtohsv = function() {
 		switch (arguments.length) {
 			case 1:
@@ -658,6 +845,11 @@ function Colour() {
 		return [h, s, v];
 	};
 
+	/**	hextorgb
+	*	takes a colour string in hex notation with or without a hash at the 
+	*	start and in rgb or rrggbb format
+	*	returns array(r, g, b) of intensity float 0~1
+	*/
 	this.hextorgb = function(hex) {
 		if (!this.validhex(hex)) {
 			console.error("invalid hex string");
@@ -673,6 +865,13 @@ function Colour() {
 		return [r / 255, g / 255, b / 255];
 	};
 
+	/**	rgbtohex
+	*	return a hex string of given rgb colour
+	*	by default a hash is prepended to the string -- pass false to switch 
+	*	that off
+	*	arguments are (array(r, g, b), hash = true) or (r, g, b, $hash = true), 
+	*	where intensity values are float 0~1
+	*/
 	this.rgbtohex = function() {
 		switch (arguments.length) {
 			case 1:
@@ -701,16 +900,28 @@ function Colour() {
 
 	// input checking and normalization-----------------------------------------
 
+	/**	validhex
+	*	return true if the given string is a valid hex colour string, or false 
+	*	otherwise
+	*/
 	this.validhex = function(string) {
 		return typeof string == "string" && /^#?([0-9a-fA-F]{3}){1,2}$/.test(string);
 	};
 
+	/**	normalizergb
+	*	check an r, g, b array, throw warnings if any are out of range and 
+	*	return a normalized version
+	*/
 	this.normalizergb = function(rgb) {
 		if (rgb.length != 3)
 			console.error("array should have three values");
 		return [this.normalize01(rgb[0]), this.normalize01(rgb[1]), this.normalize01(rgb[2]) ];
 	};
 
+	/**	normalizehsv
+	*	check an h, s, v array, throw warnings if any are out of range and 
+	*	return a normalized version
+	*/
 	this.normalizehsv = function(hsv) {
 		if (hsv.length != 3)
 			console.error("array should have three values");
@@ -720,6 +931,10 @@ function Colour() {
 		return ret;
 	};
 
+	/**	normalizehue
+	*	return an angle (float 0~360) equivalent to the argument
+	*	false passes through untouched
+	*/
 	this.normalizehue = function(h) {
 		if (h === false)
 			return h;
@@ -732,6 +947,10 @@ function Colour() {
 		return h;
 	};
 
+	/**	normalize01
+	*	if the float given is out of the range 0~1, trigger a warning 
+	*	and return the closest float which is in range
+	*/
 	this.normalize01 = function(f) {
 		if (typeof f != "number")
 			console.error("expected a numeric type");
@@ -742,18 +961,34 @@ function Colour() {
 
 	// changing scales----------------------------------------------------------
 
+	/**	to255
+	*	return an int 0~255 corresponding to the input float 0~1
+	*/
 	this.to255 = function(f) {
 		f = this.normalize01(f);
 		return Math.round(f * 255);
 	};
 
+	/**	to100
+	*	return an int 0~100 corresponding to the input float 0~1
+	*/
 	this.to100 = function(f) {
 		f = this.normalize01(f);
 		return Math.round(f * 100);
 	};
 
-	// constructor--------------------------------------------------------------
-
+	/**	constructor
+	*	makes a new colour object, initialized to a particular colour given 
+	*	inputs, or as black given no input
+	*	can take one argument of
+	*		array of r, g, b intensities (float 0~1)
+	*		Colour object (clone the colour it holds)
+	*		lightness (float 0~1) (grey)
+	*		hex colour string with or without initial hash, 3 or 6 digit
+	*		CSS3 colour name (look for a constant called COLOUR_[string])
+	*	if an argument is present but doesn't match the above, the colour is set 
+	*	to black and a warning is triggered
+	*/
 	switch (arguments.length) {
 		case 0:
 			return this.gr(0);
