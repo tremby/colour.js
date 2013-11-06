@@ -163,7 +163,7 @@ function Colour() {
 	//get/set hybrids to either get variables or entirely replace the colour---
 
 	this.rgb = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return this.colour;
 			case 1:
@@ -180,7 +180,7 @@ function Colour() {
 	}
 	
 	this.rgb255 = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return [this.to255(this.colour[0]), this.to255(this.colour[1]), this.to255(this.colour[2])];
 			case 1:
@@ -196,7 +196,7 @@ function Colour() {
 	}
 	
 	this.rgb100 = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return array_map(array("self", "to100"), this.colour);
 			case 1:
@@ -230,13 +230,14 @@ function Colour() {
 		return this.b(arg);
 	}
 	this.r_g_b = function(index, arg) {
-		if(typeof(arg) == "undefined") return this.colour[index];
+		if (typeof(arg) == "undefined")
+			return this.colour[index];
 		this.colour[index] = this.normalize01(arg);
 		return this;
 	}
 
 	this.hsv = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return this.rgbtohsv(this.colour);
 			case 1:
@@ -252,7 +253,7 @@ function Colour() {
 	}
 
 	this.hsv100 = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				var hsv = this.rgbtohsv(this.colour);
 				return [Math.round(this.normalizehue(hsv[0])), this.to100(hsv[1]), this.to100(hsv[2])];
@@ -269,12 +270,12 @@ function Colour() {
 	}
 
 	this.hex = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return this.rgbtohex(this.colour);
 			case 1:
-				if(typeof(arguments[0]) == "string") {
-					if(!this.validhex(arguments[0])) {
+				if (typeof(arguments[0]) == "string") {
+					if (!this.validhex(arguments[0])) {
 						console.error("invalid hex string");
 						return;
 					}
@@ -289,7 +290,8 @@ function Colour() {
 	//replace the current colour-----------------------------------------------
 
 	this.gr = function(l) {
-		if(typeof(l) == "undefined") l = 0.5;
+		if (typeof(l) == "undefined")
+			l = 0.5;
 		l = this.normalize01(l);
 		return this.rgb(l, l, l);
 	}
@@ -304,7 +306,7 @@ function Colour() {
 
 	this.h = function() {
 		var hsv = this.hsv();
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return hsv[0];
 			case 1:
@@ -318,8 +320,11 @@ function Colour() {
 			default:
 				console.error("expected zero, one or two arguments");
 		}
+
 		h = this.normalizehue(h);
-		if(h == hsv[0]) return newobj ? new Colour(this) : this;
+
+		if (h == hsv[0])
+			return newobj ? new Colour(this) : this;
 		return newobj ? new Colour().hsv(h, hsv[1], hsv[2]) : this.hsv(h, hsv[1], hsv[2]);
 	}
 	this.hue = function() {
@@ -328,7 +333,7 @@ function Colour() {
 
 	this.s = function() {
 		var hsv = this.hsv();
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return hsv[1];
 			case 1:
@@ -342,7 +347,8 @@ function Colour() {
 			default:
 				console.error("expected zero, one or two arguments");
 		}
-		if(s == hsv[1]) return newobj ? new Colour(this) : this;
+		if (s == hsv[1])
+			return newobj ? new Colour(this) : this;
 		return newobj ? new Colour().hsv(hsv[0], s, hsv[2]) : this.hsv(hsv[0], s, hsv[2]);
 	}
 	this.saturation = function() {
@@ -350,13 +356,14 @@ function Colour() {
 	}
 	
 	this.desaturate = function() {
-		if(arguments.length > 0) return this.s(0, arguments[0]);
+		if (arguments.length > 0)
+			return this.s(0, arguments[0]);
 		return this.s(0);
 	}
 
 	this.v = function() {
 		var hsv = this.hsv();
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 0:
 				return hsv[1];
 			case 1:
@@ -370,7 +377,8 @@ function Colour() {
 			default:
 				console.error("expected zero, one or two arguments");
 		}
-		if(v == hsv[2]) return newobj ? new Colour(this) : this;
+		if (v == hsv[2])
+			return newobj ? new Colour(this) : this;
 		return newobj ? new Colour().hsv(hsv[0], hsv[1], v) : this.hsv(hsv[0], hsv[1], v);
 	}
 	this.value = function() {
@@ -380,21 +388,24 @@ function Colour() {
 	this.shade = function() {
 		var l = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
-		if(typeof(l) != "undefined" && (l == 0 || l == 1)) { //black or white
+
+		if (typeof(l) != "undefined" && (l == 0 || l == 1)) //black or white
 			return newobj ? new Colour(l) : this.grey(l);
-		}
+
 		var rgb = this.rgb();
 		var i = (rgb[0] + rgb[1] + rgb[2]) / 3; //overall intensity
-		if(typeof(l) == "undefined") return i;
-		if(i == l) { //unlikely, but hey
+
+		if (typeof(l) == "undefined")
+			return i;
+		if (i == l) //unlikely, but hey
 			return newobj ? new Colour(this) : this;
-		}
+
 		var diff = l - i;
-		if(diff > 0) {
+		if (diff > 0)
 			var scale = diff / (1 - i);
-		} else {
+		else
 			var scale = diff / i;
-		}
+
 		return this.shiftshade(scale, newobj);
 	}
 	this.sh = function() {
@@ -403,7 +414,8 @@ function Colour() {
 	
 	this.shifthue = function() {
 		var hsv = this.hsv();
-		if(arguments.length > 1) return this.h(hsv[0] + arguments[0], arguments[1]);
+		if (arguments.length > 1)
+			return this.h(hsv[0] + arguments[0], arguments[1]);
 		return this.h(hsv[0] + arguments[0]);
 	}
 	this.shh = function() {
@@ -413,15 +425,17 @@ function Colour() {
 	this.shiftsaturation = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
-		if(scale == 0) { //no change
+
+		if (scale == 0) //no change
 			return newobj ? new Colour(this) : this;
-		}
+
 		var hsv = this.hsv();
-		if(scale > 0) {
+
+		if (scale > 0)
 			var s = hsv[1] + (1 - hsv[1]) * scale;
-		} else {
+		else
 			var s = hsv[1] * (scale + 1);
-		}
+
 		return newobj ? new Colour().hsv(hsv[0], s, hsv[2]) : this.hsv(hsv[0], s, hsv[2]);
 	}
 	this.shs = function() {
@@ -431,15 +445,17 @@ function Colour() {
 	this.shiftvalue = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
-		if(scale == 0) { //no change
+
+		if (scale == 0) //no change
 			return newobj ? new Colour(this) : this;
-		}
+
 		var hsv = this.hsv();
-		if(scale > 0) {
+
+		if (scale > 0)
 			var v = hsv[2] + (1 - hsv[2]) * scale;
-		} else {
+		else
 			var v = hsv[2] * (scale + 1);
-		}
+
 		return newobj ? new Colour().hsv(hsv[0], hsv[1], v) : this.hsv(hsv[0], hsv[1], v);
 	}
 	this.shv = function() {
@@ -449,24 +465,21 @@ function Colour() {
 	this.shiftshade = function() {
 		var scale = arguments[0];
 		var newobj = arguments.length > 1 ? arguments[1] : true;
-		if(scale == 0) { //no change
+
+		if (scale == 0) //no change
 			return newobj ? new Colour(this) : this;
-		}
-		if(scale == 1 || arguments[0] == -1) { //black or white
+		if (scale == 1 || arguments[0] == -1) //black or white
 			return newobj ? new Colour(scale / 2 + 0.5) : this.grey(arguments[0] / 2 + 0.5);
-		}
-		if(scale > 0) {
+		if (scale > 0)
 			return this.mix(new Colour(1), scale, newobj);
-		} else {
-			return this.mix(new Colour(0), -scale, newobj);
-		}
+		return this.mix(new Colour(0), -scale, newobj);
 	}
 	this.shsh = function() {
 		return this.shiftshade.apply(this, arguments);
 	}
 	
 	this.halfsat = function() {
-		if(arguments.length == 2 && typeof(arguments[1]) != "boolean") {
+		if (arguments.length == 2 && typeof(arguments[1]) != "boolean") {
 			var h = arguments[0];
 			var v = arguments[1];
 			var newobj = true;
@@ -511,9 +524,11 @@ function Colour() {
 		var showhex = arguments.length > 0 ? arguments[0] : true;
 		var cssclass = arguments.length > 1 ? arguments[1] : "";
 		var html = "<span class=\"swatch";
-		if(cssclass != "") html += " " + cssclass;
+		if (cssclass != "")
+			html += " " + cssclass;
 		html += "\" style=\"";
-		if(cssclass == "") html += "font-family: monospace; padding: 0.3em 0.8em; ";
+		if (cssclass == "")
+			html += "font-family: monospace; padding: 0.3em 0.8em; ";
 		html += "background-color: " + this.hex() + "; color: " + (this.shade() > 0.5 ? "black" : "white") + "\">";
 		html += showhex ? this.hex() : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		html += "</span>";
@@ -523,14 +538,15 @@ function Colour() {
 	this.rgburl = function() {
 		var forhtml = arguments.length > 0 ? arguments[0] : false;
 		var string = "r=" + this.r() + "&g=" + this.g() + "&b=" + this.b();
-		if(forhtml) return string.replace(/&/g, "&amp;");
+		if (forhtml)
+			return string.replace(/&/g, "&amp;");
 		return string;
 	}
 
 	//static colour conversion functions---------------------------------------
 
 	this.hsvtorgb = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 1:
 				var hsv = arguments[0];
 				break;
@@ -546,19 +562,18 @@ function Colour() {
 		var s = hsv[1];
 		var v = hsv[2];
 		
-		if(h === false || s == 0) { //black or grey
+		if (h === false || s == 0) //black or grey
 			return [v, v, v];
-		}
 		
-		//compute rgb
 		h /= 60; //sector 0~5
 		var i = Math.floor(h);
 		var f = h - i; //factorial part of h (hue position in the sector)
 		var p = v * (1 - s);
 		var q = v * (1 - s * f);
 		var t = v * (1 - s * (1 - f));
+
 		var r, g, b;
-		switch(i) {
+		switch (i) {
 			case 0:		r = v; g = t; b = p; break;
 			case 1:		r = q; g = v; b = p; break;
 			case 2:		r = p; g = v; b = t; break;
@@ -570,7 +585,7 @@ function Colour() {
 	}
 	
 	this.rgbtohsv = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 1:
 				var rgb = arguments[0];
 				break;
@@ -587,37 +602,37 @@ function Colour() {
 		var b = rgb[2];
 		
 		var v = r;
-		if(g > v) v = g;
-		if(b > v) v = b;
-
+		if (g > v)
+			v = g;
+		if (b > v)
+			v = b;
 		var min = r;
-		if(g < min) min = g;
-		if(b < min) min = b;
-
+		if (g < min) min = g;
+		if (b < min) min = b;
 		var delta = v - min;
-		if(v == 0 || delta == 0) { //black or grey
+
+		if (v == 0 || delta == 0) //black or grey
 			return [null, 0, v];
-		}
+
 		var s = delta / v;
-		if(r >= g && r >= b) { //between yellow and magenta
+
+		if (r >= g && r >= b) //between yellow and magenta
 			var h = (g - b) / delta;
-		} else if(g >= r && g >= b) { //between cyan and yellow
+		else if (g >= r && g >= b) //between cyan and yellow
 			var h = 2 + (b - r) / delta;
-		} else { //between magenta and cyan
+		else //between magenta and cyan
 			var h = 4 + (r - g) / delta;
-		}
+
 		h *= 60; //to degrees
 		h = this.normalizehue(h);
 		return [h, s, v];
 	}
 	
 	this.hextorgb = function(hex) {
-		if(hex[0] == "#") { //strip hash
+		if (hex[0] == "#") //strip hash
 			hex = hex.substr(1);
-		}
-		if(hex.length == 3) {
+		if (hex.length == 3)
 			hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-		}
 		var r = parseInt(hex.substr(0, 2), 16);
 		var g = parseInt(hex.substr(2, 2), 16);
 		var b = parseInt(hex.substr(4, 2), 16);
@@ -625,7 +640,7 @@ function Colour() {
 	}	
 	
 	this.rgbtohex = function() {
-		switch(arguments.length) {
+		switch (arguments.length) {
 			case 1:
 			case 2:
 				var rgb = arguments[0];
@@ -643,9 +658,9 @@ function Colour() {
 		rgb[0] = this.to255(rgb[0]).toString(16);
 		rgb[1] = this.to255(rgb[1]).toString(16);
 		rgb[2] = this.to255(rgb[2]).toString(16);
-		if(rgb[0].length < 2) rgb[0] = "0" + rgb[0];
-		if(rgb[1].length < 2) rgb[1] = "0" + rgb[1];
-		if(rgb[2].length < 2) rgb[2] = "0" + rgb[2];
+		if (rgb[0].length < 2) rgb[0] = "0" + rgb[0];
+		if (rgb[1].length < 2) rgb[1] = "0" + rgb[1];
+		if (rgb[2].length < 2) rgb[2] = "0" + rgb[2];
 
 		return (hash ? "#" : "") + rgb[0] + rgb[1] + rgb[2];
 	}
@@ -657,9 +672,8 @@ function Colour() {
 	}
 	
 	this.normalizergb = function(rgb) {
-		if(rgb.length != 3) {
+		if (rgb.length != 3)
 			console.warn("array should have three values -- setting any missing ones to zero");
-		}
 		return [
 			typeof(rgb[0]) != "undefined" ? this.normalize01(rgb[0]) : 0,
 			typeof(rgb[1]) != "undefined" ? this.normalize01(rgb[1]) : 0,
@@ -668,33 +682,35 @@ function Colour() {
 	}
 	
 	this.normalizehsv = function(hsv) {
-		if(hsv.length != 3) {
+		if (hsv.length != 3)
 			console.warn("array should have three values -- setting any missing ones to false (hue) or zero (otherwise)");
-		}
 		var ret = [
 			typeof(hsv[0]) != "undefined" ? this.normalizehue(hsv[0]) : false,
 			typeof(hsv[1]) != "undefined" ? this.normalize01(hsv[1]) : 0,
 			typeof(hsv[2]) != "undefined" ? this.normalize01(hsv[2]) : 0
 		];
-		if(ret[1] == 0) ret[0] = false;
+		if (ret[1] == 0)
+			ret[0] = false;
 		return ret;
 	}
 	
 	this.normalizehue = function(h) {
-		if(h === false) return h;
-		while(h < 0) h += 360;
-		while(h >= 360) h -= 360;
+		if (h === false)
+			return h;
+		while(h < 0)
+			h += 360;
+		while(h >= 360)
+			h -= 360;
 		return h;
 	}
 	
 	this.normalize01 = function(f) {
-		if(f < 0 || f > 1) {
+		if (f < 0 || f > 1) {
 			console.warn("value out of range");
-			if(f < 0) {
+			if (f < 0)
 				f = 0;
-			} else {
+			else
 				f = 1;
-			}
 		}
 		return f;
 	}
@@ -713,27 +729,22 @@ function Colour() {
 
 	//constructor--------------------------------------------------------------
 	
-	switch(arguments.length) {
+	switch (arguments.length) {
 		case 0:
 			return this.gr(0);
 		case 1:
 			arg = arguments[0];
 
-			if(typeof(arg) == "object" && arg.length == 3) { //rgb values
+			if (typeof(arg) == "object" && arg.length == 3) //rgb values
 				return this.rgb(arg);
-			}
-			if(typeof(arg) == "object" && typeof(arg.CSS3) == "object") { //Colour object (bad test but hey)
+			if (typeof(arg) == "object" && typeof(arg.CSS3) == "object") //Colour object (bad test but hey)
 				return this.rgb(arg.rgb());
-			}
-			if(typeof(arg) == "number") { //lightness
+			if (typeof(arg) == "number") //lightness
 				return this.gr(arg);
-			}
-			if(this.validhex(arg)) { //hex value
+			if (this.validhex(arg)) //hex value
 				return this.hex(arg);
-			}
-			if(typeof(arg) == "string" && typeof(eval("this.CSS3." + arg.toLowerCase())) != "undefined" && this.validhex(eval("this.CSS3." + arg.toLowerCase()))) { //named colour
+			if (typeof(arg) == "string" && typeof(eval("this.CSS3." + arg.toLowerCase())) != "undefined" && this.validhex(eval("this.CSS3." + arg.toLowerCase()))) //named colour
 				return this.hex(eval("this.CSS3." + arg.toLowerCase()));
-			}
 
 			//give up and use black
 			console.warn("unrecognized constructor option");
@@ -743,4 +754,3 @@ function Colour() {
 			return false;
 	}
 };
-
