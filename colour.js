@@ -5,7 +5,8 @@
  * parallel with Colour.php version 2.2.19
  * bart@tremby.net
  */
-function Colour() {
+(function() {
+var Colour = function() {
 	//default values
 	this.colour = [0, 0, 0];
 
@@ -971,3 +972,9 @@ function Colour() {
 			return false;
 	};
 };
+if (typeof window !== 'undefined') {
+	window.Colour = Colour;
+} else if (typeof module !== 'undefined') {
+	module.exports = Colour;
+}
+})();
