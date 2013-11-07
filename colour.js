@@ -166,8 +166,8 @@ var Colour = function() {
 	/**	rgb
 	*	takes r, g, b (each intensity float 0~1) or an array of the same values, 
 	*	and sets this colour to it
-	*	given no arguments, returns array(r, g, b) of intensity float 0~1 of 
-	*	this colour
+	*	given no arguments, returns [r, g, b] of intensity float 0~1 of this 
+	*	colour
 	*/
 	this.rgb = function() {
 		switch (arguments.length) {
@@ -189,8 +189,8 @@ var Colour = function() {
 	/**	rgb255
 	*	takes r, g, b (each intensity int 0~255) or an array of the same values, 
 	*	and sets this colour to it
-	*	given no arguments, returns array(r, g, b) of intensity int 0~255 of 
-	*	this colour
+	*	given no arguments, returns [r, g, b] of intensity int 0~255 of this 
+	*	colour
 	*/
 	this.rgb255 = function() {
 		switch (arguments.length) {
@@ -216,8 +216,8 @@ var Colour = function() {
 	/**	rgb100
 	*	takes r, g, b (each intensity int 0~100) or an array of the same values, 
 	*	and sets this colour to it
-	*	given no arguments, returns array(r, g, b) of intensity int 0~100 of 
-	*	this colour
+	*	given no arguments, returns [r, g, b] of intensity int 0~100 of this 
+	*	colour
 	*/
 	this.rgb100 = function() {
 		switch (arguments.length) {
@@ -710,7 +710,7 @@ var Colour = function() {
 	/**	hsvtorgb
 	*	takes hue float 0~360, saturation float 0~1, value float 0~1 
 	*	or an array of the same values
-	*	returns array(r, g, b) of intensity float 0~1
+	*	returns [r, g, b] of intensity float 0~1
 	*/
 	this.hsvtorgb = function() {
 		switch (arguments.length) {
@@ -754,8 +754,8 @@ var Colour = function() {
 	/**	rgbtohsv
 	*	takes r, g, b (each intensity float 0~1)
 	*	or an array of the same values
-	*	returns array(h (hue float 0~360), s (saturation float 0~1), v (value 
-	*	float 0~1))
+	*	returns [h (hue float 0~360), s (saturation float 0~1), v (value float 
+	*	0~1)]
 	*/
 	this.rgbtohsv = function() {
 		switch (arguments.length) {
@@ -804,7 +804,7 @@ var Colour = function() {
 	/**	hextorgb
 	*	takes a colour string in hex notation with or without a hash at the 
 	*	start and in rgb or rrggbb format
-	*	returns array(r, g, b) of intensity float 0~1
+	*	returns [r, g, b] of intensity float 0~1
 	*/
 	this.hextorgb = function(hex) {
 		if (!this.validhex(hex)) {
@@ -825,8 +825,8 @@ var Colour = function() {
 	*	return a hex string of given rgb colour
 	*	by default a hash is prepended to the string -- pass false to switch 
 	*	that off
-	*	arguments are (array(r, g, b), hash = true) or (r, g, b, $hash = true), 
-	*	where intensity values are float 0~1
+	*	arguments are ([r, g, b], hash = true) or (r, g, b, hash = true), where 
+	*	intensity values are float 0~1
 	*/
 	this.rgbtohex = function() {
 		switch (arguments.length) {
@@ -941,7 +941,7 @@ var Colour = function() {
 	*		Colour object (clone the colour it holds)
 	*		lightness (float 0~1) (grey)
 	*		hex colour string with or without initial hash, 3 or 6 digit
-	*		CSS3 colour name (look for a constant called COLOUR_[string])
+	*		CSS3 colour name
 	*	if an argument is present but doesn't match the above, the colour is set 
 	*	to black and a warning is triggered
 	*/
