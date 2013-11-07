@@ -1,6 +1,6 @@
 /*
  * bart's colour class for javascript
- * version 1.4.1
+ * version 1.5.0
  * JS port of Colour.php
  * parallel with Colour.php version 2.2.19
  * bart@tremby.net
