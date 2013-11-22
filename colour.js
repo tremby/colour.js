@@ -1,6 +1,6 @@
 /*
  * bart's colour class for javascript
- * version 1.5.0
+ * version 1.5.1
  * JS port of Colour.php
  * parallel with Colour.php version 2.2.19
  * bart@tremby.net
@@ -375,7 +375,7 @@ var Colour = function() {
 				console.error("expected zero, one or two arguments");
 		}
 
-		if (h === false)
+		if (h === null)
 			return this.desaturate(newobj);
 
 		h = this.normalizehue(h);
@@ -729,7 +729,7 @@ var Colour = function() {
 		var s = hsv[1];
 		var v = hsv[2];
 
-		if (h === false || s == 0) //black or grey
+		if (h === null || s == 0) //black or grey
 			return [v, v, v];
 
 		h /= 60; //sector 0~5
@@ -883,19 +883,19 @@ var Colour = function() {
 			console.error("array should have three values");
 		var ret = [this.normalizehue(hsv[0]), this.normalize01(hsv[1]), this.normalize01(hsv[2])];
 		if (ret[1] == 0)
-			ret[0] = false;
+			ret[0] = null;
 		return ret;
 	};
 
 	/**	normalizehue
 	*	return an angle (float 0~360) equivalent to the argument
-	*	false passes through untouched
+	*	null passes through untouched
 	*/
 	this.normalizehue = function(h) {
-		if (h === false)
+		if (h === null)
 			return h;
 		if (typeof h != "number")
-			console.error("expected a numeric type or false");
+			console.error("expected a numeric type or null");
 		while (h < 0)
 			h += 360;
 		while (h >= 360)
