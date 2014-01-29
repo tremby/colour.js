@@ -25,6 +25,10 @@ Colour = require 'colour.js'
 Browser
 -------
 
+You can install the script via `bower` or download it manually.
+
+	bower install --save colour.js
+
 Include the script on your page. In the browser it is attached to the `window` 
 object.
 
