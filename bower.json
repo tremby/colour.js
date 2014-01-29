@@ -1,0 +1,16 @@
+{
+	"name": "colour.js",
+	"main": "colour.js",
+	"version": "1.5.1",
+	"homepage": "https://github.com/tremby/colour.js",
+	"authors": [
+		"Bart Nagel <bart@tremby.net>"
+	],
+	"description": "Colour manipulation class",
+	"keywords": [
+		"colour",
+		"color",
+		"css"
+	],
+	"license": "MIT"
+}
