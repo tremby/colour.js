@@ -35,6 +35,8 @@ object.
 Reference
 ---------
 
+(This is in Coffeescript syntax.)
+
 ### Making new colours
 
 -	A new colour is black by default:
