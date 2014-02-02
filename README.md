@@ -6,7 +6,7 @@ Colour manipulation class
 This is an old class I originally wrote for PHP years ago and then ported to 
 Javascript. I have also written from scratch [a similar class in 
 Python](https://github.com/tremby/py-colour), which I intend to use as a base 
-and port back to Javascript as version colour.js version 2. Until then, main 
+and port back to Javascript as colour.js version 2. Until then, main 
 documentation is in the source code.
 
 Node
